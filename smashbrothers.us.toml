@@ -1,0 +1,54 @@
+# Config file for Smash 64 Recompilation.
+
+[input]
+entrypoint_name = "entry"
+entrypoint = 0x80000400
+# Paths are relative to the location of this config file.
+elf_path = "smashbrothers.us.elf"
+output_func_path = "RecompiledFuncs"
+#use_absolute_symbols = true
+manual_funcs = [
+    { name = "_bnkfPatchBank", section = ".main", vram = 0x8001E708, size = 0xB8 },
+    { name = "_bnkfPatchInst", section = ".main", vram = 0x8001E7C0, size = 0x98 },
+    { name = "_bnkfPatchSound", section = ".main", vram = 0x8001E858, size = 0x58 },
+    { name = "_bnkfPatchWaveTable", section = ".main", vram = 0x8001E8B0, size = 0x6C },
+]
+
+[patches]
+ignored = [
+    "n_aspMainTextStart",
+]
+
+# Changes reading a hardware register into a call to the equivalent libultra function
+#this function is massive...it can stay in the toml for now
+[[patches.hook]]
+func = "syAudioThreadMain"
+text = "    osAiGetLength_recomp(rdram, ctx);"
+before_vram = 0x800202E0
+[[patches.instruction]]
+func = "syAudioThreadMain"
+vram = 0x800202E0
+value = 0x00000000 # nop
+[[patches.instruction]]
+func = "syAudioThreadMain"
+vram = 0x800202E4
+value = 0x00406825 # move t5, v0
+
+[[patches.hook]]
+func = "syAudioThreadMain"
+text = "    osAiGetLength_recomp(rdram, ctx);"
+before_vram = 0x800209A8
+[[patches.instruction]]
+func = "syAudioThreadMain"
+vram = 0x800209A8
+value = 0x00000000 # nop
+[[patches.instruction]]
+func = "syAudioThreadMain"
+vram = 0x800209AC
+value = 0x00406025 # move t4, v0
+
+# fix anti-piracy check that randomizes knockback
+[[patches.instruction]]
+func = "mnVSModeFuncStart"
+vram = 0x80134628
+value = 0x1100000B # beq $t0, $zero, 0x0B
