@@ -1,0 +1,15 @@
+[submodule "lib/N64ModernRuntime"]
+	path = lib/N64ModernRuntime
+	url = https://github.com/N64Recomp/N64ModernRuntime.git
+[submodule "lib/RecompFrontend"]
+	path = lib/RecompFrontend
+	url = https://github.com/N64Recomp/RecompFrontend.git
+[submodule "lib/rt64"]
+	path = lib/rt64
+	url = https://github.com/rt64/rt64.git
+[submodule "lib/ssb-decomp-re"]
+	path = lib/ssb-decomp-re
+	url = https://github.com/VetriTheRetri/ssb-decomp-re
+[submodule "Smash64RecompSyms"]
+	path = Smash64RecompSyms
+	url = https://github.com/Smash64Recomp/Smash64RecompSyms.git
