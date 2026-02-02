@@ -76,29 +76,29 @@ jobs:
         run: |
           ./N64Recomp smashbrothers.us.toml
           ./RSPRecomp n_aspMain.us.toml
-      - name: Build Smash64Recomp
+      - name: Build Smash64Recompiled
         run: |-
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
          
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER=clang++-15 -DCMAKE_C_COMPILER=clang-15 -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build
-          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recomp -j $(nproc)
+          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j $(nproc)
       - name: Prepare Archive
         run: |
-          mv cmake-build/Smash64Recomp Smash64Recomp
-          tar -czf Smash64Recomp.tar.gz Smash64Recomp assets/ recompcontrollerdb.txt
-      - name: Archive Smash64Recomp
+          mv cmake-build/Smash64Recompiled Smash64Recompiled
+          tar -czf Smash64Recompiled.tar.gz Smash64Recompiled assets/ recompcontrollerdb.txt
+      - name: Archive Smash64Recompiled
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-${{ runner.os }}-X64-${{ matrix.type }}
-          path: Smash64Recomp.tar.gz
+          name: Smash64Recompiled-${{ runner.os }}-X64-${{ matrix.type }}
+          path: Smash64Recompiled.tar.gz
       - name: Build AppImage
         run: |-
           ./.github/linux/appimage.sh
-      - name: Smash64Recomp AppImage
+      - name: Smash64Recompiled AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-AppImage-X64-${{ matrix.type }}
-          path: Smash64Recomp-*.AppImage
+          name: Smash64Recompiled-AppImage-X64-${{ matrix.type }}
+          path: Smash64Recompiled-*.AppImage
   build-linux-flatpak:
     runs-on: ubuntu-latest
     env:
@@ -137,7 +137,7 @@ jobs:
           flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
           flatpak --user install -y flathub org.freedesktop.Sdk//${{ env.FREEDESKTOP_VERSION }}
           flatpak --user install -y flathub org.freedesktop.Sdk.Extension.llvm${{ env.LLVM_VERSION }}//${{ env.FREEDESKTOP_VERSION }}
-      - name: Build Smash64Recomp
+      - name: Build Smash64Recompiled
         run: |-
           export CCACHE_DIR=/tmp/ccache
           git config --global protocol.file.allow always
@@ -147,7 +147,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-Flatpak-X64-${{ matrix.type }}
+          name: Smash64Recompiled-Flatpak-X64-${{ matrix.type }}
           path: ./${{ env.FLATPAK_ID }}.flatpak
   build-linux-arm64:
     runs-on: ubuntu-22.04-arm
@@ -204,28 +204,28 @@ jobs:
         run: |
           ./N64Recomp smashbrothers.us.toml
           ./RSPRecomp n_aspMain.us.toml
-      - name: Build Smash64Recomp
+      - name: Build Smash64Recompiled
         run: |-
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER=clang++-15 -DCMAKE_C_COMPILER=clang-15 -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build
-          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recomp -j $(nproc)
+          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j $(nproc)
       - name: Prepare Archive
         run: |
-          mv cmake-build/Smash64Recomp Smash64Recomp
-          tar -czf Smash64Recomp.tar.gz Smash64Recomp assets/ recompcontrollerdb.txt
-      - name: Archive Smash64Recomp
+          mv cmake-build/Smash64Recompiled Smash64Recompiled
+          tar -czf Smash64Recompiled.tar.gz Smash64Recompiled assets/ recompcontrollerdb.txt
+      - name: Archive Smash64Recompiled
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-${{ runner.os }}-ARM64-${{ matrix.type }}
-          path: Smash64Recomp.tar.gz
+          name: Smash64Recompiled-${{ runner.os }}-ARM64-${{ matrix.type }}
+          path: Smash64Recompiled.tar.gz
       - name: Build AppImage
         run: |-
           ./.github/linux/appimage.sh
-      - name: Smash64Recomp AppImage
+      - name: Smash64Recompiled AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-AppImage-ARM64-${{ matrix.type }}
-          path: Smash64Recomp-*.AppImage
+          name: Smash64Recompiled-AppImage-ARM64-${{ matrix.type }}
+          path: Smash64Recompiled-*.AppImage
   build-windows:
     runs-on: windows-latest
     strategy:
@@ -280,7 +280,7 @@ jobs:
         run: |
           ./N64Recomp.exe smashbrothers.us.toml
           ./RSPRecomp.exe n_aspMain.us.toml
-      - name: Build Smash64Recomp
+      - name: Build Smash64Recompiled
         run: |-
           set $env:PATH="$env:USERPROFILE/.cargo/bin;$env:PATH"
           $cpuCores = (Get-CimInstance -ClassName Win32_Processor).NumberOfLogicalProcessors
@@ -296,12 +296,12 @@ jobs:
           Move-Item -Path "cmake-build/dxil.dll" -Destination "dxil.dll"
           Move-Item -Path "cmake-build/SDL2.dll" -Destination "SDL2.dll"
           Move-Item -Path "cmake-build/Smash64Recompiled.pdb" -Destination "Smash64Recompiled.pdb"
-      - name: Archive Smash64Recomp
+      - name: Archive Smash64Recompiled
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-${{ runner.os }}-${{ matrix.type }}
+          name: Smash64Recompiled-${{ runner.os }}-${{ matrix.type }}
           path: |
-            Smash64Recomp.exe
+            Smash64Recompiled.exe
             dxcompiler.dll
             dxil.dll
             SDL2.dll
@@ -310,9 +310,9 @@ jobs:
       - name: Archive Debug Files
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-PDB-${{ matrix.type }}
+          name: Smash64Recompiled-PDB-${{ matrix.type }}
           path: |
-            Smash64Recomp.pdb
+            Smash64Recompiled.pdb
   build-macos:
     runs-on: macos-14
     strategy:
@@ -365,7 +365,7 @@ jobs:
         run: |
           ./N64Recomp smashbrothers.us.toml
           ./RSPRecomp n_aspMain.us.toml
-      - name: Build Smash64Recomp
+      - name: Build Smash64Recompiled
         run: |-
           export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
          
@@ -375,10 +375,10 @@ jobs:
           cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j $(sysctl -n hw.ncpu)
       - name: Prepare Archive
         run: |
-          mv cmake-build/Smash64Recomp.app Smash64Recomp.app
-          zip -r -y Smash64Recomp.zip Smash64Recomp.app
-      - name: Archive Smash64Recomp
+          mv cmake-build/Smash64Recompiled.app Smash64Recompiled.app
+          zip -r -y Smash64Recompiled.zip Smash64Recompiled.app
+      - name: Archive Smash64Recompiled
         uses: actions/upload-artifact@v4
         with:
-          name: Smash64Recomp-${{ runner.os }}-${{ matrix.type }}
-          path: Smash64Recomp.zip
+          name: Smash64Recompiled-${{ runner.os }}-${{ matrix.type }}
+          path: Smash64Recompiled.zip
