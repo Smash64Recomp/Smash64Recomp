@@ -13,13 +13,6 @@ namespace smash64 {
 
     namespace configkeys {
         namespace general {
-            inline const std::string note_saving_mode = "note_saving_mode";
-            inline const std::string camera_invert_mode = "camera_invert_mode";
-            inline const std::string analog_cam_mode = "analog_cam_mode";
-            inline const std::string third_person_camera_invert_mode = "third_person_camera_invert_mode";
-            inline const std::string flying_and_swimming_invert_mode = "flying_and_swimming_invert_mode";
-            inline const std::string first_person_invert_mode = "first_person_invert_mode";
-            inline const std::string analog_camera_sensitivity = "analog_camera_sensitivity";
         }
 
         namespace sound {
@@ -59,13 +52,7 @@ namespace smash64 {
 
     uint32_t get_analog_cam_sensitivity();
 
-    enum class NoteSavingMode {
-        On,
-        Off,
-        OptionCount
-    };
 
-    NoteSavingMode get_note_saving_mode();
 
     enum class CutsceneAspectRatioMode {
         Original,
@@ -85,9 +72,6 @@ NLOHMANN_JSON_SERIALIZE_ENUM(smash64::AnalogCamMode, {
     {smash64::AnalogCamMode::Off, "Off"}
 });
 
-NLOHMANN_JSON_SERIALIZE_ENUM(smash64::NoteSavingMode, {
-    {smash64::NoteSavingMode::On, "On"},
-    {smash64::NoteSavingMode::Off, "Off"}
-});
+
 
 #endif

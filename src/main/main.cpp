@@ -63,9 +63,7 @@
 #endif
 
 #include "../../lib/rt64/src/contrib/stb/stb_image.h"
-//Hacky - fix later
-extern "C" void syMainSetImemStatus_recomp(uint8_t* rdram, recomp_context* ctx);
-extern "C" void syMainSetDmemStatus_recomp(uint8_t* rdram, recomp_context* ctx);
+
 
 const std::string version_string = "1.0.1";
 
@@ -723,22 +721,12 @@ int main(int argc, char** argv) {
         recomp::register_game(game);
     }
 
-    recomp::mods::register_deprecated_mod("bk_recomp_mod_fov_slider", recomp::mods::DeprecationStatus::BrokenVersion, recomp::Version(1, 1, 0));
-
     REGISTER_FUNC(recomp_get_window_resolution);
     REGISTER_FUNC(recomp_get_target_aspect_ratio);
     REGISTER_FUNC(recomp_get_target_framerate);
-    REGISTER_FUNC(recomp_get_cutscene_aspect_ratio);
-    REGISTER_FUNC(recomp_get_analog_cam_enabled);
     REGISTER_FUNC(recomp_get_right_analog_inputs);
     REGISTER_FUNC(recomp_get_bgm_volume);
-    // REGISTER_FUNC(recomp_get_gyro_deltas);
-    // REGISTER_FUNC(recomp_get_mouse_deltas);
-    REGISTER_FUNC(recomp_get_inverted_axes);
-    REGISTER_FUNC(recomp_get_analog_inverted_axes);
-    //Hacky - fix later
-    REGISTER_FUNC(syMainSetImemStatus_recomp);
-    REGISTER_FUNC(syMainSetDmemStatus_recomp);
+
     recompui::register_ui_exports();
     recomputil::register_data_api_exports();
     recomptheme::set_custom_theme();

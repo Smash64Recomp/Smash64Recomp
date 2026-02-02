@@ -126,9 +126,6 @@ extern "C" void recomp_get_bgm_volume(uint8_t* rdram, recomp_context* ctx) {
     _return(ctx, smash64::get_bgm_volume() / 100.0f);
 }
 
-extern "C" void recomp_get_analog_cam_sensitivity(uint8_t* rdram, recomp_context* ctx) {
-    _return<uint32_t>(ctx, smash64::get_analog_cam_sensitivity());
-}
 
 
 extern "C" void recomp_time_us(uint8_t* rdram, recomp_context* ctx) {
@@ -151,53 +148,9 @@ extern "C" void recomp_get_resolution_scale(uint8_t* rdram, recomp_context* ctx)
     _return(ctx, ultramodern::get_resolution_scale());
 }
 
-extern "C" void recomp_get_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
-    s32* x_out = _arg<0, s32*>(rdram, ctx);
-    s32* y_out = _arg<1, s32*>(rdram, ctx);
 
-    smash64::CameraInvertMode mode = smash64::get_camera_invert_mode();
 
-    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
-    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
-}
 
-extern "C" void recomp_get_analog_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
-    s32* x_out = _arg<0, s32*>(rdram, ctx);
-    s32* y_out = _arg<1, s32*>(rdram, ctx);
-
-    smash64::CameraInvertMode mode = smash64::get_third_person_camera_mode();
-
-    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
-    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
-}
-
-extern "C" void recomp_get_flying_and_swimming_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
-    s32* x_out = _arg<0, s32*>(rdram, ctx);
-    s32* y_out = _arg<1, s32*>(rdram, ctx);
-
-    smash64::CameraInvertMode mode = smash64::get_flying_and_swimming_invert_mode();
-
-    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
-    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
-}
-
-extern "C" void recomp_get_first_person_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
-    s32* x_out = _arg<0, s32*>(rdram, ctx);
-    s32* y_out = _arg<1, s32*>(rdram, ctx);
-
-    smash64::CameraInvertMode mode = smash64::get_first_person_invert_mode();
-
-    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
-    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
-}
-
-extern "C" void recomp_get_analog_cam_enabled(uint8_t* rdram, recomp_context* ctx) {
-    _return<s32>(ctx, smash64::get_analog_cam_mode() == smash64::AnalogCamMode::On);
-}
-
-extern "C" void recomp_get_note_saving_enabled(uint8_t* rdram, recomp_context* ctx) {
-    _return<s32>(ctx, smash64::get_note_saving_mode() == smash64::NoteSavingMode::On);
-}
 
 extern "C" void recomp_get_right_analog_inputs(uint8_t* rdram, recomp_context* ctx) {
     float* x_out = _arg<0, float*>(rdram, ctx);

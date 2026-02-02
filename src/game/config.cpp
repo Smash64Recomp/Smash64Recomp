@@ -2,6 +2,7 @@
 #include "recompui/recompui.h"
 #include "recompui/config.h"
 #include "recompinput/recompinput.h"
+#include "recompinput/profiles.h"
 #include "smash64_sound.h"
 #include "smash64_support.h"
 #include "ultramodern/config.hpp"
@@ -24,78 +25,8 @@
 static void add_general_options(recomp::config::Config &config) {
     using EnumOptionVector = const std::vector<recomp::config::ConfigOptionEnumOption>;
 
-    static EnumOptionVector note_saving_mode_options = {
-        {smash64::NoteSavingMode::Off, "Off", "Off"},
-        {smash64::NoteSavingMode::On, "On", "On"},
-    };
-    config.add_enum_option(
-        smash64::configkeys::general::note_saving_mode,
-        "Note Saving",
-        "Saves collected notes so that you don't need to collect them again when revisiting a level. <recomp-color primary>On</recomp-color> is the default, while <recomp-color primary>off</recomp-color> matches the original game.",
-        note_saving_mode_options,
-        smash64::NoteSavingMode::On
-    );
-    static EnumOptionVector analog_cam_mode_options = {
-        {smash64::AnalogCamMode::Off, "Off", "Off"},
-        {smash64::AnalogCamMode::On, "On", "On"},
-    };
-    config.add_enum_option(
-        smash64::configkeys::general::analog_cam_mode,
-        "Analog Camera",
-        "Enables the analog camera.",
-        analog_cam_mode_options,
-        smash64::AnalogCamMode::Off
-    );
-    config.add_number_option(
-        smash64::configkeys::general::analog_camera_sensitivity,
-        "Analog Camera Sensitivity",
-        "Sets the sensitivity of the right stick analog camera, if enabled.",
-        1, 10, 1, 0, false, 3
-    );
-    config.add_option_hidden_dependency(
-        smash64::configkeys::general::analog_camera_sensitivity,
-        smash64::configkeys::general::analog_cam_mode,
-        smash64::AnalogCamMode::Off
-    );
-    static EnumOptionVector camera_invert_mode_options = {
-        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
-    };
-    config.add_enum_option(
-        smash64::configkeys::general::third_person_camera_invert_mode,
-        "Invert Camera",
-        "Inverts the camera controls for the third person camera if it's enabled. <recomp-color primary>Invert X</recomp-color> is the default and matches the original game.<br /><br />If analog camera is off, only the <recomp-color primary>Invert X</recomp-color> setting will take effect.",
-        camera_invert_mode_options,
-        smash64::CameraInvertMode::InvertX
-    );
-    static EnumOptionVector first_person_invert_mode_options = {
-        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
-    };
-    config.add_enum_option(
-        smash64::configkeys::general::first_person_invert_mode,
-        "Invert First Person View",
-        "Inverts the camera controls in first person view. <recomp-color primary>Invert Y</recomp-color> is the default and matches the original game.",
-        first_person_invert_mode_options,
-        smash64::CameraInvertMode::InvertY
-    );
-    static EnumOptionVector flying_and_swimming_invert_options = {
-        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
-    };
-    config.add_enum_option(
-        smash64::configkeys::general::flying_and_swimming_invert_mode,
-        "Invert Flying & Swimming",
-        "Inverts the controls for swimming and flying. <recomp-color primary>Invert Y</recomp-color> is the default and matches the original game.",
-        flying_and_swimming_invert_options,
-        smash64::CameraInvertMode::InvertY
-    );
+
+
 }
 
 template <typename T = uint32_t>
@@ -108,33 +39,6 @@ T get_general_config_number_value(const std::string& option_id) {
     return static_cast<T>(std::get<double>(recompui::config::get_general_config().get_option_value(option_id)));
 }
 
-smash64::NoteSavingMode smash64::get_note_saving_mode() {
-    return get_general_config_enum_value<smash64::NoteSavingMode>(smash64::configkeys::general::note_saving_mode);
-}
-
-smash64::CameraInvertMode smash64::get_camera_invert_mode() {
-    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::camera_invert_mode);
-}
-
-smash64::CameraInvertMode smash64::get_third_person_camera_mode() {
-    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::third_person_camera_invert_mode);
-}
-
-smash64::CameraInvertMode smash64::get_flying_and_swimming_invert_mode() {
-    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::flying_and_swimming_invert_mode);
-}
-
-smash64::CameraInvertMode smash64::get_first_person_invert_mode() {
-    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::first_person_invert_mode);
-}
-
-smash64::AnalogCamMode smash64::get_analog_cam_mode() {
-    return get_general_config_enum_value<smash64::AnalogCamMode>(smash64::configkeys::general::analog_cam_mode);
-}
-
-uint32_t smash64::get_analog_cam_sensitivity() {
-    return get_general_config_number_value(smash64::configkeys::general::analog_camera_sensitivity);
-}
 
 template <typename T = uint32_t>
 T get_graphics_config_enum_value(const std::string& option_id) {
@@ -165,13 +69,7 @@ static void add_graphics_options(recomp::config::Config &config) {
         {smash64::CutsceneAspectRatioMode::Clamp16x9, "Clamp16x9", "16:9"},
         {smash64::CutsceneAspectRatioMode::Full, "Expand", "Expand"},
     };
-    config.add_enum_option(
-        smash64::configkeys::graphics::cutscene_aspect_ratio_mode,
-        "Cutscene Aspect Ratio",
-        "Sets the aspect ratio limit for cutscenes. Cutscenes have been adjusted to work in <recomp-color primary>16:9</recomp-color>, which is the default option. Wider aspect ratios may show details that weren't meant to be on-screen.",
-        cutscene_aspect_ratio_mode_options,
-        smash64::CutsceneAspectRatioMode::Clamp16x9
-    );    
+
 }
 
 static void set_control_defaults() {
@@ -270,5 +168,10 @@ void smash64::init_config() {
     recompui::config::create_mods_tab();
 
     recompui::config::finalize();
-
+    
+    // Load saved controller profiles after config is initialized
+    std::filesystem::path controls_config_path = recomp_dir / "controls.json";
+    if (std::filesystem::exists(controls_config_path)) {
+        recompinput::profiles::load_controls_config(controls_config_path);
+    }
 }
