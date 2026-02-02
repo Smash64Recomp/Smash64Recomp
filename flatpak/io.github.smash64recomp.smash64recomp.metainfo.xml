@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.Smash64recomp.Smash64recomp</id>
+  <id>io.github.smash64recomp.smash64recomp</id>
   
   <name>Smash64: Recompiled</name>
   <summary>Static recompilation of Smash64 for PC.</summary>
