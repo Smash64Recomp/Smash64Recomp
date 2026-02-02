@@ -179,12 +179,12 @@ void smash64::launcher_animation_setup(recompui::LauncherMenu* menu) {
 
     // Disable and hide the options.
     for (auto option : menu->get_game_options_menu()->get_options()) {
-        option->set_font_family("Suplexmentary Comic NC");
+        option->set_font_family("ITC Kabel Std");  // Try the filename without extension
         option->set_enabled(false);
         option->set_opacity(0.0f);
         option->set_padding(24.0f);
         auto label = option->get_label();
-        label->set_font_size(56.0f);
+        label->set_font_size(60.0f);
         label->set_letter_spacing(4.0f);
     }
 
@@ -323,6 +323,10 @@ void smash64::launcher_animation_update(recompui::LauncherMenu* menu) {
         launcher_context.options_enabled = true;
     }
 }
+
+
+
+
 
 
 
