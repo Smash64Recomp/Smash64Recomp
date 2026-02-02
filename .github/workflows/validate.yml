@@ -221,6 +221,7 @@ jobs:
           path: Smash64Recompiled.tar.gz
       - name: Build AppImage
         run: |-
+          chmod +x  ./.github/linux/appimage.sh
           ./.github/linux/appimage.sh
       - name: Smash64Recompiled AppImage
         uses: actions/upload-artifact@v4

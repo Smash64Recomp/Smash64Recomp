@@ -14,6 +14,7 @@ set_target_properties(Smash64Recompiled PROPERTIES
         XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_FILE}
 )
 
+
 # Create icon files for macOS bundle
 set(ICON_SOURCE ${CMAKE_SOURCE_DIR}/icons/app.png)
 set(ICONSET_DIR ${CMAKE_BINARY_DIR}/AppIcon.iconset)
@@ -23,7 +24,8 @@ set(ICNS_FILE ${CMAKE_BINARY_DIR}/resources/AppIcon.icns)
 add_custom_command(
         OUTPUT ${ICONSET_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory ${ICONSET_DIR}
-        COMMAND ${CMAKE_COMMAND} -E copy ${ICON_SOURCE} ${ICONSET_DIR}/app.png
+        COMMAND ${CMAKE_COMMAND} -E copy ${ICON_SOURCE} ${ICONSET_DIR}/icon_512x512.png
+        COMMAND ${CMAKE_COMMAND} -E copy ${ICON_SOURCE} ${ICONSET_DIR}/icon_512x512@2x.png
         COMMAND touch ${ICONSET_DIR}
         COMMENT "Creating iconset directory and copying PNG file"
 )
