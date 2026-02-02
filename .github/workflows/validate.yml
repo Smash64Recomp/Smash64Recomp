@@ -291,11 +291,11 @@ jobs:
           SDL2_VERSION: ${{ inputs.SDL2_VERSION }}
       - name: Prepare Archive
         run: |
-          Move-Item -Path "cmake-build/Smash64Recomp.exe" -Destination "Smash64Recomp.exe"
+          Move-Item -Path "cmake-build/Smash64Recompiled.exe" -Destination "Smash64Recompiled.exe"
           Move-Item -Path "cmake-build/dxcompiler.dll" -Destination "dxcompiler.dll"
           Move-Item -Path "cmake-build/dxil.dll" -Destination "dxil.dll"
           Move-Item -Path "cmake-build/SDL2.dll" -Destination "SDL2.dll"
-          Move-Item -Path "cmake-build/Smash64Recomp.pdb" -Destination "Smash64Recomp.pdb"
+          Move-Item -Path "cmake-build/Smash64Recompiled.pdb" -Destination "Smash64Recompiled.pdb"
       - name: Archive Smash64Recomp
         uses: actions/upload-artifact@v4
         with:
@@ -372,7 +372,7 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build \
           -DPATCHES_LD=/opt/local/bin/ld.lld-mp-18 -DCMAKE_AR=/opt/local/bin/llvm-ar-mp-18 -DPATCHES_C_COMPILER=/opt/local/bin/clang-mp-18 \
           -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
-          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recomp -j $(sysctl -n hw.ncpu)
+          cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j $(sysctl -n hw.ncpu)
       - name: Prepare Archive
         run: |
           mv cmake-build/Smash64Recomp.app Smash64Recomp.app
