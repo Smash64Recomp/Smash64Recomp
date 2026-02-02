@@ -4,7 +4,9 @@
 entrypoint_name = "entry"
 entrypoint = 0x80000400
 # Paths are relative to the location of this config file.
-elf_path = "smashbrothers.us.elf"
+# elf_path = "smashbrothers.us.elf"
+syms_file_path = "Smash64RecompSyms/smashbrothers.us.syms.toml"
+rom_file_path = "smashbrothers.us.z64"
 output_func_path = "RecompiledFuncs"
 #use_absolute_symbols = true
 manual_funcs = [
