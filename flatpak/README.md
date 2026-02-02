@@ -5,11 +5,11 @@ make -C patches CC=clang LD=ld.lld
 
 Build
 ```sh
-flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo --install builddir io.github.banjorecomp.banjorecomp.json
+flatpak-builder --force-clean --user --install-deps-from=flathub --repo=repo --install builddir io.github.smash64recomp.smash64recomp.json
 ```
 
 Bundle
 ```sh
-flatpak build-bundle repo io.github.banjorecomp.banjorecomp.flatpak io.github.banjorecomp.banjorecomp --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+flatpak build-bundle repo io.github.smash64recomp.smash64recomp.flatpak io.github.smash64recomp.smash64recomp --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
 ```
 
