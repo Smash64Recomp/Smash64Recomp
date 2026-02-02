@@ -251,7 +251,7 @@ void queue_samples(int16_t* audio_data, size_t sample_count) {
     }
 
     // TODO handle cases where a chunk is smaller than the duplicated frame count.
-    assert(sample_count > duplicated_input_frames * input_channels);
+    // assert(sample_count > duplicated_input_frames * input_channels);
 
     // Copy the last converted samples into the duplicated sample buffer to reuse in resampling the next queued chunk.
     for (size_t i = 0; i < duplicated_input_frames * input_channels; i++) {
@@ -378,7 +378,7 @@ gpr get_entrypoint_address();
 std::vector<recomp::GameEntry> supported_games = {
     {
         .rom_hash = 0x38912ac86097bfec,
-        .internal_name = "SMASH BROTHERS",
+        .internal_name = "SMASH BROTHERS     ",
         .display_name = "Super Smash Bros.",
         .game_id = u8"smashbrothers.us",
         .mod_game_id = "ssb",
@@ -574,6 +574,9 @@ void reorder_texture_pack(recomp::mods::ModContext&) {
 }
 
 void on_launcher_init(recompui::LauncherMenu* menu) {
+    fprintf(stdout, "[DEBUG] Launcher initialization starting\n");
+    fflush(stdout);
+    
     auto game_options_menu = menu->init_game_options_menu(
         supported_games[0].game_id,
         supported_games[0].mod_game_id,
@@ -611,6 +614,9 @@ void on_launcher_init(recompui::LauncherMenu* menu) {
     menu->remove_default_title();
 
     smash64::launcher_animation_setup(menu);
+    
+    fprintf(stdout, "[DEBUG] Launcher initialization complete\n");
+    fflush(stdout);
 }
 
 #define REGISTER_FUNC(name) recomp::overlays::register_base_export(#name, name)

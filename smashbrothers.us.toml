@@ -19,8 +19,17 @@ ignored = [
     "n_aspMainTextStart",
 ]
 
+# remove imem/dmem checks
+[[patches.instruction]]
+func = "syMainThread5"
+vram = 0x8000063C
+value = 0x00000000 # j -> nop
+[[patches.instruction]]
+func = "syMainThread5"
+vram = 0x80000644
+value = 0x00000000 # j -> nop
+
 # Changes reading a hardware register into a call to the equivalent libultra function
-#this function is massive...it can stay in the toml for now
 [[patches.hook]]
 func = "syAudioThreadMain"
 text = "    osAiGetLength_recomp(rdram, ctx);"
@@ -47,8 +56,29 @@ func = "syAudioThreadMain"
 vram = 0x800209AC
 value = 0x00406025 # move t4, v0
 
+# CRITICAL: Add yield calls to prevent infinite busy-wait loops
+[[patches.hook]]
+func = "syAudioGetSettingsUpdated"
+text = "    yield_self(rdram);"
+
+[[patches.hook]]
+func = "syAudioGetRestarting"
+text = "    yield_self_1ms(rdram);"
+
+[[patches.hook]]
+func = "syAudioCheckBGMPlaying"
+text = "    yield_self(rdram);"
+
 # fix anti-piracy check that randomizes knockback
 [[patches.instruction]]
 func = "mnVSModeFuncStart"
 vram = 0x80134628
 value = 0x1100000B # beq $t0, $zero, 0x0B
+
+[[patches.hook]]
+func = "sySchedulerGetTicCount"
+text = "    yield_self(rdram);"
+
+[[patches.hook]]
+func = "syDmaLoadOverlay"
+text = "    load_overlays(MEM_W(0, ctx->r4), MEM_W(0x8, ctx->r4), (uint32_t)(MEM_W(0x4, ctx->r4) - MEM_W(0x0, ctx->r4)));"text = "    load_overlays(MEM_W(0, ctx->r4), MEM_W(0x8, ctx->r4), (uint32_t)(MEM_W(0x4, ctx->r4) - MEM_W(0x0, ctx->r4)));"

@@ -16,7 +16,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_SIMULATE_ID STREQUAL "M
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-everything /W4")
 endif()
 
-# Opt out of constexpr mutex constructor on windows to prevent vcredist issues
+# Opt out of constexpr mutex construpctor on windows to prevent vcredist issues
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR")
 endif()
@@ -80,6 +80,7 @@ file(GLOB FUNC_CXX_SOURCES ${CMAKE_SOURCE_DIR}/RecompiledFuncs/*.cpp)
 target_sources(RecompiledFuncs PRIVATE ${FUNC_C_SOURCES} ${FUNC_CXX_SOURCES})
 
 # PatchesLib - Library containing the recompiled output for any custom function patches
+
 add_library(PatchesLib STATIC)
 
 target_compile_options(PatchesLib PRIVATE
@@ -138,7 +139,6 @@ add_custom_command(OUTPUT
                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
                    DEPENDS ${CMAKE_SOURCE_DIR}/patches/patches.elf
 )
-
 # Main executable
 add_executable(Smash64Recompiled)
 

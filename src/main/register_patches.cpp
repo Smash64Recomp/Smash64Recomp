@@ -12,5 +12,5 @@ extern "C" {
 #include "../../RecompiledPatches/recomp_overlays.inl"
 
 void smash64::register_patches() {
-    recomp::overlays::register_patches(bk_patches_bin, bk_patches_bin_size, section_table, ARRLEN(section_table));
+recomp::overlays::register_patches(bk_patches_bin, bk_patches_bin_size, section_table, ARRLEN(section_table));
 }

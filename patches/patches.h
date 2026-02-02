@@ -81,4 +81,27 @@ int recomp_printf(const char* fmt, ...);
 
 void recomp_crash(const char* err);
 
+// Scene type enums (from scdef.h)
+typedef enum nSCKind
+{
+    nSCKindNoController = 0,
+    nSCKindTitle = 1,
+    nSCKindStartup = 32,  // N64 logo (US only)
+    // Add more as needed...
+} nSCKind;
+
+// Scene data structure (simplified)
+typedef struct SCCommonData
+{
+    s32 scene_curr;
+    s32 scene_prev;
+    // ... other fields we don't need for the stub
+} SCCommonData;
+
+// External reference to global scene data
+extern SCCommonData gSCManagerSceneData;
+
+// External function to trigger scene loading
+extern void syTaskmanSetLoadScene(void);
+
 #endif
