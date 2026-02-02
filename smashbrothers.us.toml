@@ -4,9 +4,7 @@
 entrypoint_name = "entry"
 entrypoint = 0x80000400
 # Paths are relative to the location of this config file.
-# elf_path = "smashbrothers.us.elf"
-syms_file_path = "Smash64RecompSyms/smashbrothers.us.syms.toml"
-rom_file_path = "smashbrothers.us.z64"
+elf_path = "smashbrothers.us.elf"
 output_func_path = "RecompiledFuncs"
 #use_absolute_symbols = true
 manual_funcs = [
@@ -83,4 +81,4 @@ text = "    yield_self(rdram);"
 
 [[patches.hook]]
 func = "syDmaLoadOverlay"
-text = "    load_overlays(MEM_W(0, ctx->r4), MEM_W(0x8, ctx->r4), (uint32_t)(MEM_W(0x4, ctx->r4) - MEM_W(0x0, ctx->r4)));"text = ";
+text = "    load_overlays(MEM_W(0, ctx->r4), MEM_W(0x8, ctx->r4), (uint32_t)(MEM_W(0x4, ctx->r4) - MEM_W(0x0, ctx->r4)));"
