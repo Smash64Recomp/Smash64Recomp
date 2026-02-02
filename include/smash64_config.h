@@ -1,5 +1,5 @@
-#ifndef __BANJO_CONFIG_H__
-#define __BANJO_CONFIG_H__
+#ifndef __SMASH64_CONFIG_H__
+#define __SMASH64_CONFIG_H__
 
 #include <filesystem>
 #include <string>
@@ -7,9 +7,9 @@
 
 #include "json/json.hpp"
 
-namespace banjo {
-    inline const std::u8string program_id = u8"BanjoRecompiled";
-    inline const std::string program_name = "Banjo: Recompiled";
+namespace smash64 {
+    inline const std::u8string program_id = u8"Smash64Recompiled";
+    inline const std::string program_name = "Smash64: Recompiled";
 
     namespace configkeys {
         namespace general {
@@ -55,11 +55,6 @@ namespace banjo {
         OptionCount
     };
 
-    NLOHMANN_JSON_SERIALIZE_ENUM(banjo::AnalogCamMode, {
-        {banjo::AnalogCamMode::On, "On"},
-        {banjo::AnalogCamMode::Off, "Off"}
-    });
-
     AnalogCamMode get_analog_cam_mode();
 
     uint32_t get_analog_cam_sensitivity();
@@ -69,11 +64,6 @@ namespace banjo {
         Off,
         OptionCount
     };
-
-    NLOHMANN_JSON_SERIALIZE_ENUM(banjo::NoteSavingMode, {
-        {banjo::NoteSavingMode::On, "On"},
-        {banjo::NoteSavingMode::Off, "Off"}
-    });
 
     NoteSavingMode get_note_saving_mode();
 
@@ -87,6 +77,17 @@ namespace banjo {
     CutsceneAspectRatioMode get_cutscene_aspect_ratio_mode();
 
     void open_quit_game_prompt();
-};
+}
+
+// JSON serialization macros must be placed OUTSIDE the namespace
+NLOHMANN_JSON_SERIALIZE_ENUM(smash64::AnalogCamMode, {
+    {smash64::AnalogCamMode::On, "On"},
+    {smash64::AnalogCamMode::Off, "Off"}
+});
+
+NLOHMANN_JSON_SERIALIZE_ENUM(smash64::NoteSavingMode, {
+    {smash64::NoteSavingMode::On, "On"},
+    {smash64::NoteSavingMode::Off, "Off"}
+});
 
 #endif

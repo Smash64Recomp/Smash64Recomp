@@ -13,4 +13,9 @@ RECOMP_PATCH void syDmaReadRom(uintptr_t rom_src, void *ram_dst, size_t size) {
     }
     
     syDmaCopy(gSYDmaRomPiHandle, rom_src, (uintptr_t)ram_dst, size, OS_READ);
+    
+    if (logFirstDma == 1) {
+        recomp_printf("First DMA completed successfully\n");
+        logFirstDma = 2;
+    }
 }

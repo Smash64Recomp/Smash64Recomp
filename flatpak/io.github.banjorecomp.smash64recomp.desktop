@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Smash64: Recompiled
+Exec=/app/bin/smash64Recompiled
+Type=Application
+Icon=io.github.smash64.smash64
+Categories=Game;
+Comment=Static recompilation of smash64 for PC.
+MimeType=x-scheme-handler/smash64

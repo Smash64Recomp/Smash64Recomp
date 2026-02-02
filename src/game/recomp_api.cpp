@@ -3,11 +3,12 @@
 #include "recomp.h"
 #include "librecomp/overlays.hpp"
 #include "librecomp/addresses.hpp"
-#include "banjo_config.h"
+#include "smash64_config.h"
+#include "smash64_game.h"
 #include "recompinput/recompinput.h"
 #include "recompui/recompui.h"
 #include "recompui/renderer.h"
-#include "banjo_sound.h"
+#include "smash64_sound.h"
 #include "librecomp/helpers.hpp"
 #include "../patches/input.h"
 #include "../patches/graphics.h"
@@ -92,41 +93,41 @@ extern "C" void recomp_get_target_aspect_ratio(uint8_t* rdram, recomp_context* c
     recompui::get_window_size(width, height);
 
     switch (graphics_config.ar_option) {
-        case ultramodern::renderer::AspectRatio::Original:
-        default:
-            _return(ctx, original);
-            return;
-        case ultramodern::renderer::AspectRatio::Expand:
-            _return(ctx, std::max(static_cast<float>(width) / height, original));
-            return;
+    case ultramodern::renderer::AspectRatio::Original:
+    default:
+        _return(ctx, original);
+        return;
+    case ultramodern::renderer::AspectRatio::Expand:
+        _return(ctx, std::max(static_cast<float>(width) / height, original));
+        return;
     }
 }
 
-extern "C" void recomp_get_cutscene_aspect_ratio(uint8_t *rdram, recomp_context *ctx) {
+extern "C" void recomp_get_cutscene_aspect_ratio(uint8_t* rdram, recomp_context* ctx) {
     float original = _arg<0, float>(rdram, ctx);
     int width, height;
     recompui::get_window_size(width, height);
 
-    switch (banjo::get_cutscene_aspect_ratio_mode()) {
-        case banjo::CutsceneAspectRatioMode::Original:
-            _return(ctx, original);
-            return;
-        case banjo::CutsceneAspectRatioMode::Clamp16x9:
-        default:
-            _return(ctx, 16.0f / 9.0f);
-            return;
-        case banjo::CutsceneAspectRatioMode::Full:
-            _return(ctx, std::max(static_cast<float>(width) / height, original));
-            return;
+    switch (smash64::get_cutscene_aspect_ratio_mode()) {
+    case smash64::CutsceneAspectRatioMode::Original:
+        _return(ctx, original);
+        return;
+    case smash64::CutsceneAspectRatioMode::Clamp16x9:
+    default:
+        _return(ctx, 16.0f / 9.0f);
+        return;
+    case smash64::CutsceneAspectRatioMode::Full:
+        _return(ctx, std::max(static_cast<float>(width) / height, original));
+        return;
     }
 }
 
 extern "C" void recomp_get_bgm_volume(uint8_t* rdram, recomp_context* ctx) {
-    _return(ctx, banjo::get_bgm_volume() / 100.0f);
+    _return(ctx, smash64::get_bgm_volume() / 100.0f);
 }
 
 extern "C" void recomp_get_analog_cam_sensitivity(uint8_t* rdram, recomp_context* ctx) {
-    _return<uint32_t>(ctx, banjo::get_analog_cam_sensitivity());
+    _return<uint32_t>(ctx, smash64::get_analog_cam_sensitivity());
 }
 
 
@@ -134,7 +135,7 @@ extern "C" void recomp_time_us(uint8_t* rdram, recomp_context* ctx) {
     _return(ctx, static_cast<u32>(std::chrono::duration_cast<std::chrono::microseconds>(ultramodern::time_since_start()).count()));
 }
 
-extern "C" void recomp_load_overlays(uint8_t * rdram, recomp_context * ctx) {
+extern "C" void recomp_load_overlays(uint8_t* rdram, recomp_context* ctx) {
     u32 rom = _arg<0, u32>(rdram, ctx);
     PTR(void) ram = _arg<1, PTR(void)>(rdram, ctx);
     u32 size = _arg<2, u32>(rdram, ctx);
@@ -142,7 +143,7 @@ extern "C" void recomp_load_overlays(uint8_t * rdram, recomp_context * ctx) {
     load_overlays(rom, ram, size);
 }
 
-extern "C" void recomp_high_precision_fb_enabled(uint8_t * rdram, recomp_context * ctx) {
+extern "C" void recomp_high_precision_fb_enabled(uint8_t* rdram, recomp_context* ctx) {
     _return(ctx, static_cast<s32>(recompui::renderer::RT64HighPrecisionFBEnabled()));
 }
 
@@ -154,48 +155,48 @@ extern "C" void recomp_get_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
     s32* x_out = _arg<0, s32*>(rdram, ctx);
     s32* y_out = _arg<1, s32*>(rdram, ctx);
 
-    banjo::CameraInvertMode mode = banjo::get_camera_invert_mode();
+    smash64::CameraInvertMode mode = smash64::get_camera_invert_mode();
 
-    *x_out = (mode == banjo::CameraInvertMode::InvertX || mode == banjo::CameraInvertMode::InvertBoth);
-    *y_out = (mode == banjo::CameraInvertMode::InvertY || mode == banjo::CameraInvertMode::InvertBoth);
+    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
+    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
 }
 
 extern "C" void recomp_get_analog_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
     s32* x_out = _arg<0, s32*>(rdram, ctx);
     s32* y_out = _arg<1, s32*>(rdram, ctx);
 
-    banjo::CameraInvertMode mode = banjo::get_third_person_camera_mode();
+    smash64::CameraInvertMode mode = smash64::get_third_person_camera_mode();
 
-    *x_out = (mode == banjo::CameraInvertMode::InvertX || mode == banjo::CameraInvertMode::InvertBoth);
-    *y_out = (mode == banjo::CameraInvertMode::InvertY || mode == banjo::CameraInvertMode::InvertBoth);
+    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
+    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
 }
 
 extern "C" void recomp_get_flying_and_swimming_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
     s32* x_out = _arg<0, s32*>(rdram, ctx);
     s32* y_out = _arg<1, s32*>(rdram, ctx);
 
-    banjo::CameraInvertMode mode = banjo::get_flying_and_swimming_invert_mode();
+    smash64::CameraInvertMode mode = smash64::get_flying_and_swimming_invert_mode();
 
-    *x_out = (mode == banjo::CameraInvertMode::InvertX || mode == banjo::CameraInvertMode::InvertBoth);
-    *y_out = (mode == banjo::CameraInvertMode::InvertY || mode == banjo::CameraInvertMode::InvertBoth);
+    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
+    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
 }
 
 extern "C" void recomp_get_first_person_inverted_axes(uint8_t* rdram, recomp_context* ctx) {
     s32* x_out = _arg<0, s32*>(rdram, ctx);
     s32* y_out = _arg<1, s32*>(rdram, ctx);
 
-    banjo::CameraInvertMode mode = banjo::get_first_person_invert_mode();
+    smash64::CameraInvertMode mode = smash64::get_first_person_invert_mode();
 
-    *x_out = (mode == banjo::CameraInvertMode::InvertX || mode == banjo::CameraInvertMode::InvertBoth);
-    *y_out = (mode == banjo::CameraInvertMode::InvertY || mode == banjo::CameraInvertMode::InvertBoth);
+    *x_out = (mode == smash64::CameraInvertMode::InvertX || mode == smash64::CameraInvertMode::InvertBoth);
+    *y_out = (mode == smash64::CameraInvertMode::InvertY || mode == smash64::CameraInvertMode::InvertBoth);
 }
 
 extern "C" void recomp_get_analog_cam_enabled(uint8_t* rdram, recomp_context* ctx) {
-    _return<s32>(ctx, banjo::get_analog_cam_mode() == banjo::AnalogCamMode::On);
+    _return<s32>(ctx, smash64::get_analog_cam_mode() == smash64::AnalogCamMode::On);
 }
 
 extern "C" void recomp_get_note_saving_enabled(uint8_t* rdram, recomp_context* ctx) {
-    _return<s32>(ctx, banjo::get_note_saving_mode() == banjo::NoteSavingMode::On);
+    _return<s32>(ctx, smash64::get_note_saving_mode() == smash64::NoteSavingMode::On);
 }
 
 extern "C" void recomp_get_right_analog_inputs(uint8_t* rdram, recomp_context* ctx) {
@@ -223,7 +224,7 @@ constexpr uint32_t k1_to_phys(uint32_t addr) {
     return addr & 0x1FFFFFFF;
 }
 
-extern "C" void osPiReadIo_recomp(RDRAM_ARG recomp_context * ctx) {
+extern "C" void osPiReadIo_recomp(RDRAM_ARG recomp_context* ctx) {
     uint32_t devAddr = recomp::rom_base | ctx->r4;
     gpr dramAddr = ctx->r5;
     uint32_t physical_addr = k1_to_phys(devAddr);
@@ -231,7 +232,8 @@ extern "C" void osPiReadIo_recomp(RDRAM_ARG recomp_context * ctx) {
     if (physical_addr > recomp::rom_base) {
         // cart rom
         recomp::do_rom_pio(PASS_RDRAM dramAddr, physical_addr);
-    } else {
+    }
+    else {
         // sram
         assert(false && "SRAM ReadIo unimplemented");
     }
@@ -239,7 +241,7 @@ extern "C" void osPiReadIo_recomp(RDRAM_ARG recomp_context * ctx) {
     ctx->r2 = 0;
 }
 
-extern "C" void osPfsInit_recomp(uint8_t * rdram, recomp_context* ctx) {
+extern "C" void osPfsInit_recomp(uint8_t* rdram, recomp_context* ctx) {
     ctx->r2 = 11; // PFS_ERR_DEVICE
 }
 
@@ -271,7 +273,28 @@ extern "C" void recomp_xxh3(uint8_t* rdram, recomp_context* ctx) {
     }
 
     uint64_t ret = XXH3_64bits_digest(&xxh3);
-    
+
+    ctx->r2 = (int32_t)(ret >> 32);
+    ctx->r3 = (int32_t)(ret >> 0);
+}
+// Stub for __osSetWatchLo
+extern "C" void __osSetWatchLo_recomp(RDRAM_ARG recomp_context* ctx) {
+}
+
+// Patch for syMainSetImemStatus
+extern "C" void syMainSetImemStatus_recomp(RDRAM_ARG recomp_context* ctx) {
+}
+
+// Patch for syMainSetDmemStatus
+extern "C" void syMainSetDmemStatus_recomp(RDRAM_ARG recomp_context* ctx) {
+}
+
+
+extern "C" void __ll_rem_recomp(uint8_t* rdram, recomp_context* ctx) {
+    uint64_t a = (ctx->r4 << 32) | ((ctx->r5 << 0) & 0xFFFFFFFFu);
+    int64_t b = (ctx->r6 << 32) | ((ctx->r7 << 0) & 0xFFFFFFFFu);
+    int64_t ret = a % b;
+
     ctx->r2 = (int32_t)(ret >> 32);
     ctx->r3 = (int32_t)(ret >> 0);
 }

@@ -1,9 +1,9 @@
-#include "banjo_config.h"
+#include "smash64_config.h"
 #include "recompui/recompui.h"
 #include "recompui/config.h"
 #include "recompinput/recompinput.h"
-#include "banjo_sound.h"
-#include "banjo_support.h"
+#include "smash64_sound.h"
+#include "smash64_support.h"
 #include "ultramodern/config.hpp"
 #include "librecomp/files.hpp"
 #include "librecomp/config.hpp"
@@ -25,76 +25,76 @@ static void add_general_options(recomp::config::Config &config) {
     using EnumOptionVector = const std::vector<recomp::config::ConfigOptionEnumOption>;
 
     static EnumOptionVector note_saving_mode_options = {
-        {banjo::NoteSavingMode::Off, "Off", "Off"},
-        {banjo::NoteSavingMode::On, "On", "On"},
+        {smash64::NoteSavingMode::Off, "Off", "Off"},
+        {smash64::NoteSavingMode::On, "On", "On"},
     };
     config.add_enum_option(
-        banjo::configkeys::general::note_saving_mode,
+        smash64::configkeys::general::note_saving_mode,
         "Note Saving",
         "Saves collected notes so that you don't need to collect them again when revisiting a level. <recomp-color primary>On</recomp-color> is the default, while <recomp-color primary>off</recomp-color> matches the original game.",
         note_saving_mode_options,
-        banjo::NoteSavingMode::On
+        smash64::NoteSavingMode::On
     );
     static EnumOptionVector analog_cam_mode_options = {
-        {banjo::AnalogCamMode::Off, "Off", "Off"},
-        {banjo::AnalogCamMode::On, "On", "On"},
+        {smash64::AnalogCamMode::Off, "Off", "Off"},
+        {smash64::AnalogCamMode::On, "On", "On"},
     };
     config.add_enum_option(
-        banjo::configkeys::general::analog_cam_mode,
+        smash64::configkeys::general::analog_cam_mode,
         "Analog Camera",
         "Enables the analog camera.",
         analog_cam_mode_options,
-        banjo::AnalogCamMode::Off
+        smash64::AnalogCamMode::Off
     );
     config.add_number_option(
-        banjo::configkeys::general::analog_camera_sensitivity,
+        smash64::configkeys::general::analog_camera_sensitivity,
         "Analog Camera Sensitivity",
         "Sets the sensitivity of the right stick analog camera, if enabled.",
         1, 10, 1, 0, false, 3
     );
     config.add_option_hidden_dependency(
-        banjo::configkeys::general::analog_camera_sensitivity,
-        banjo::configkeys::general::analog_cam_mode,
-        banjo::AnalogCamMode::Off
+        smash64::configkeys::general::analog_camera_sensitivity,
+        smash64::configkeys::general::analog_cam_mode,
+        smash64::AnalogCamMode::Off
     );
     static EnumOptionVector camera_invert_mode_options = {
-        {banjo::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {banjo::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {banjo::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {banjo::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
+        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
+        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
+        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
+        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
     };
     config.add_enum_option(
-        banjo::configkeys::general::third_person_camera_invert_mode,
+        smash64::configkeys::general::third_person_camera_invert_mode,
         "Invert Camera",
         "Inverts the camera controls for the third person camera if it's enabled. <recomp-color primary>Invert X</recomp-color> is the default and matches the original game.<br /><br />If analog camera is off, only the <recomp-color primary>Invert X</recomp-color> setting will take effect.",
         camera_invert_mode_options,
-        banjo::CameraInvertMode::InvertX
+        smash64::CameraInvertMode::InvertX
     );
     static EnumOptionVector first_person_invert_mode_options = {
-        {banjo::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {banjo::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {banjo::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {banjo::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
+        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
+        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
+        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
+        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
     };
     config.add_enum_option(
-        banjo::configkeys::general::first_person_invert_mode,
+        smash64::configkeys::general::first_person_invert_mode,
         "Invert First Person View",
         "Inverts the camera controls in first person view. <recomp-color primary>Invert Y</recomp-color> is the default and matches the original game.",
         first_person_invert_mode_options,
-        banjo::CameraInvertMode::InvertY
+        smash64::CameraInvertMode::InvertY
     );
     static EnumOptionVector flying_and_swimming_invert_options = {
-        {banjo::CameraInvertMode::InvertNone, "InvertNone", "None"},
-        {banjo::CameraInvertMode::InvertX, "InvertX", "Invert X"},
-        {banjo::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
-        {banjo::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
+        {smash64::CameraInvertMode::InvertNone, "InvertNone", "None"},
+        {smash64::CameraInvertMode::InvertX, "InvertX", "Invert X"},
+        {smash64::CameraInvertMode::InvertY, "InvertY", "Invert Y"},
+        {smash64::CameraInvertMode::InvertBoth, "InvertBoth", "Invert Both"}
     };
     config.add_enum_option(
-        banjo::configkeys::general::flying_and_swimming_invert_mode,
+        smash64::configkeys::general::flying_and_swimming_invert_mode,
         "Invert Flying & Swimming",
         "Inverts the controls for swimming and flying. <recomp-color primary>Invert Y</recomp-color> is the default and matches the original game.",
         flying_and_swimming_invert_options,
-        banjo::CameraInvertMode::InvertY
+        smash64::CameraInvertMode::InvertY
     );
 }
 
@@ -108,32 +108,32 @@ T get_general_config_number_value(const std::string& option_id) {
     return static_cast<T>(std::get<double>(recompui::config::get_general_config().get_option_value(option_id)));
 }
 
-banjo::NoteSavingMode banjo::get_note_saving_mode() {
-    return get_general_config_enum_value<banjo::NoteSavingMode>(banjo::configkeys::general::note_saving_mode);
+smash64::NoteSavingMode smash64::get_note_saving_mode() {
+    return get_general_config_enum_value<smash64::NoteSavingMode>(smash64::configkeys::general::note_saving_mode);
 }
 
-banjo::CameraInvertMode banjo::get_camera_invert_mode() {
-    return get_general_config_enum_value<banjo::CameraInvertMode>(banjo::configkeys::general::camera_invert_mode);
+smash64::CameraInvertMode smash64::get_camera_invert_mode() {
+    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::camera_invert_mode);
 }
 
-banjo::CameraInvertMode banjo::get_third_person_camera_mode() {
-    return get_general_config_enum_value<banjo::CameraInvertMode>(banjo::configkeys::general::third_person_camera_invert_mode);
+smash64::CameraInvertMode smash64::get_third_person_camera_mode() {
+    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::third_person_camera_invert_mode);
 }
 
-banjo::CameraInvertMode banjo::get_flying_and_swimming_invert_mode() {
-    return get_general_config_enum_value<banjo::CameraInvertMode>(banjo::configkeys::general::flying_and_swimming_invert_mode);
+smash64::CameraInvertMode smash64::get_flying_and_swimming_invert_mode() {
+    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::flying_and_swimming_invert_mode);
 }
 
-banjo::CameraInvertMode banjo::get_first_person_invert_mode() {
-    return get_general_config_enum_value<banjo::CameraInvertMode>(banjo::configkeys::general::first_person_invert_mode);
+smash64::CameraInvertMode smash64::get_first_person_invert_mode() {
+    return get_general_config_enum_value<smash64::CameraInvertMode>(smash64::configkeys::general::first_person_invert_mode);
 }
 
-banjo::AnalogCamMode banjo::get_analog_cam_mode() {
-    return get_general_config_enum_value<banjo::AnalogCamMode>(banjo::configkeys::general::analog_cam_mode);
+smash64::AnalogCamMode smash64::get_analog_cam_mode() {
+    return get_general_config_enum_value<smash64::AnalogCamMode>(smash64::configkeys::general::analog_cam_mode);
 }
 
-uint32_t banjo::get_analog_cam_sensitivity() {
-    return get_general_config_number_value(banjo::configkeys::general::analog_camera_sensitivity);
+uint32_t smash64::get_analog_cam_sensitivity() {
+    return get_general_config_number_value(smash64::configkeys::general::analog_camera_sensitivity);
 }
 
 template <typename T = uint32_t>
@@ -143,7 +143,7 @@ T get_graphics_config_enum_value(const std::string& option_id) {
 
 static void add_sound_options(recomp::config::Config &config) {
     config.add_percent_number_option(
-        banjo::configkeys::sound::bgm_volume,
+        smash64::configkeys::sound::bgm_volume,
         "Background Music Volume",
         "Controls the overall volume of background music.",
         100.0f
@@ -154,23 +154,23 @@ T get_sound_config_number_value(const std::string& option_id) {
     return static_cast<T>(std::get<double>(recompui::config::get_sound_config().get_option_value(option_id)));
 }
 
-int banjo::get_bgm_volume() {
-    return get_sound_config_number_value<int>(banjo::configkeys::sound::bgm_volume);
+int smash64::get_bgm_volume() {
+    return get_sound_config_number_value<int>(smash64::configkeys::sound::bgm_volume);
 }
 
 static void add_graphics_options(recomp::config::Config &config) {
     using EnumOptionVector = const std::vector<recomp::config::ConfigOptionEnumOption>;
     static EnumOptionVector cutscene_aspect_ratio_mode_options = {
-        {banjo::CutsceneAspectRatioMode::Original, "Original", "Original"},
-        {banjo::CutsceneAspectRatioMode::Clamp16x9, "Clamp16x9", "16:9"},
-        {banjo::CutsceneAspectRatioMode::Full, "Expand", "Expand"},
+        {smash64::CutsceneAspectRatioMode::Original, "Original", "Original"},
+        {smash64::CutsceneAspectRatioMode::Clamp16x9, "Clamp16x9", "16:9"},
+        {smash64::CutsceneAspectRatioMode::Full, "Expand", "Expand"},
     };
     config.add_enum_option(
-        banjo::configkeys::graphics::cutscene_aspect_ratio_mode,
+        smash64::configkeys::graphics::cutscene_aspect_ratio_mode,
         "Cutscene Aspect Ratio",
         "Sets the aspect ratio limit for cutscenes. Cutscenes have been adjusted to work in <recomp-color primary>16:9</recomp-color>, which is the default option. Wider aspect ratios may show details that weren't meant to be on-screen.",
         cutscene_aspect_ratio_mode_options,
-        banjo::CutsceneAspectRatioMode::Clamp16x9
+        smash64::CutsceneAspectRatioMode::Clamp16x9
     );    
 }
 
@@ -226,7 +226,7 @@ static void set_control_descriptions() {
     recompinput::set_game_input_description(recompinput::GameInput::B, "Used for attacks, which change depending on whether you are stationary, moving, in the air, or crouching.");
     recompinput::set_game_input_description(recompinput::GameInput::Z, "Used to crouch, which enables A, B and the C-Buttons to perform different actions.");
     recompinput::set_game_input_description(recompinput::GameInput::L, "Unused. Mods may use it for additional features.");
-    recompinput::set_game_input_description(recompinput::GameInput::R, "Used to center the camera behind Banjo on the ground, and to perform tighter turns while flying or swimming.");
+    recompinput::set_game_input_description(recompinput::GameInput::R, "Used to center the camera behind Smash64 on the ground, and to perform tighter turns while flying or swimming.");
     recompinput::set_game_input_description(recompinput::GameInput::START, "Used for pausing and for skipping certain cutscenes.");
     recompinput::set_game_input_description(recompinput::GameInput::C_UP, "Used to enter first-person mode, and to shoot eggs while holding Z.");
     recompinput::set_game_input_description(recompinput::GameInput::C_DOWN, "Used to toggle between the different camera zoom levels, and to shoot eggs backwards while holding Z.");
@@ -238,11 +238,11 @@ static void set_control_descriptions() {
     recompinput::set_game_input_description(recompinput::GameInput::DPAD_RIGHT, "Unused. Mods may use it for additional features.");
 }
 
-banjo::CutsceneAspectRatioMode banjo::get_cutscene_aspect_ratio_mode() {
-    return get_graphics_config_enum_value<banjo::CutsceneAspectRatioMode>(banjo::configkeys::graphics::cutscene_aspect_ratio_mode);
+smash64::CutsceneAspectRatioMode smash64::get_cutscene_aspect_ratio_mode() {
+    return get_graphics_config_enum_value<smash64::CutsceneAspectRatioMode>(smash64::configkeys::graphics::cutscene_aspect_ratio_mode);
 }
 
-void banjo::init_config() {
+void smash64::init_config() {
     std::filesystem::path recomp_dir = recompui::file::get_app_folder_path();
 
     if (!recomp_dir.empty()) {

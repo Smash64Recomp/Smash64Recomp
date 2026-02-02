@@ -1,9 +1,9 @@
-#ifndef __BANJO_LAUNCHER_H__
-#define __BANJO_LAUNCHER_H__
+#ifndef __SMASH64_LAUNCHER_H__
+#define __SMASH64_LAUNCHER_H__
 
 #include "recompui/recompui.h"
 
-namespace banjo {
+namespace smash64 {
     void launcher_animation_setup(recompui::LauncherMenu *menu);
     void launcher_animation_update(recompui::LauncherMenu *menu);
 
