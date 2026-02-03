@@ -21,7 +21,7 @@ mkdir -p AppDir/usr/bin
 cp Smash64Recompiled AppDir/usr/bin/
 cp -r assets/ AppDir/usr/bin/
 cp recompcontrollerdb.txt AppDir/usr/bin/
-cp icons/512.png AppDir/Smash64Recompiled.png
+cp icons/app.png AppDir/Smash64Recompiled.png
 cp .github/linux/Smash64Recompiled.desktop AppDir/
 
 "./linuxdeploy-$LINUX_DEPLOY_ARCH.AppImage" --appimage-extract
