@@ -204,9 +204,10 @@ if (MSVC)
 elseif (APPLE)
     # Use a wrapper around ld64 that respects segprot's `max_prot` value in order
     # to make our executable memory writable (required for mod function patching)
-    target_link_options(Smash64Recompiled PRIVATE
-        "-fuse-ld=${CMAKE_SOURCE_DIR}/.github/macos/ld64"
-    )
+target_link_options(Smash64Recompiled PRIVATE
+    "-fuse-ld="
+    "${CMAKE_SOURCE_DIR}/.github/macos/ld64"
+)
 endif()
 
 if (WIN32)
