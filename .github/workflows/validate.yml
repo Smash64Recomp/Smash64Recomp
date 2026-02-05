@@ -411,131 +411,73 @@ jobs:
           name: Smash64Recompiled-PDB-${{ matrix.type }}
           path: |
             Smash64Recompiled.pdb
-      build-macos:
-        runs-on: macos-latest
-        strategy:
-          matrix:
-            type:
-              - Debug
-              - Release
-        name: macOS universal (${{ matrix.type }})
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4
-            with:
-              ref: ${{ github.event.pull_request.head.sha || github.ref }}
-              submodules: recursive
-      
-          - name: ccache
-            uses: hendrikmuhs/ccache-action@v1.2
-            with:
-              key: ${{ runner.os }}-smash64re-ccache-${{ matrix.type }}-universal-${{ inputs.N64RECOMP_COMMIT }}
-      
-          - name: Install macOS dependencies
-            run: |
-              brew update
-              brew install cmake ninja ccache pkg-config
-      
-          - name: Build universal SDL2 from source
-            run: |
-              SDL_VER="${{ inputs.SDL2_VERSION }}"
-              curl -L "https://github.com/libsdl-org/SDL/releases/download/release-${SDL_VER}/SDL2-${SDL_VER}.tar.gz" -o SDL2.tar.gz
-              tar xzf SDL2.tar.gz
-              cd SDL2-${SDL_VER}
-              mkdir build && cd build
-              cmake .. \
-                -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-                -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
-                -DBUILD_SHARED_LIBS=ON \
-                -DCMAKE_INSTALL_PREFIX=/usr/local
-              make -j$(sysctl -n hw.ncpu)
-              sudo make install
-              cd ../..
-      
-          - name: Get extra dependencies (baserom)
-            uses: actions/checkout@v4
-            with:
-              repository: ${{ secrets.SMASH64_REPO_WITH_PAT }}
-              token: ${{ secrets.SMASH64_RECOMP }}
-              path: smash-secret
-      
-          - name: Prepare ROM
-            run: cp smash-secret/smashbrothers.us.z64 ./
-      
-          - name: Download n64recomp-clang tools bundle
-            run: |
-              ARCH=$(uname -m)
-              if [ "$ARCH" = "arm64" ]; then
-                BUNDLE="Darwin-arm64-ClangEssentialsAndN64Recomp-ClangVersion19.1.4-MipsOnly.tar.xz"
-              else
-                BUNDLE="Darwin-x86_64-ClangEssentialsAndN64Recomp-ClangVersion19.1.4-MipsOnly.tar.xz"
-              fi
-              curl -L "https://github.com/LT-Schmiddy/n64recomp-clang/releases/download/v19.1.4/${BUNDLE}" -o n64recomp-bundle.tar.xz
-              tar -xf n64recomp-bundle.tar.xz
-              mv Darwin-*/bin n64recomp-clang-tools
-      
-          - name: Build N64Recomp & RSPRecomp
-            run: |
-              export PATH="$PWD/n64recomp-clang-tools:$PATH"
-              git clone --recurse-submodules https://github.com/Mr-Wiseguy/N64Recomp.git N64RecompSource
-              cd N64RecompSource
-              git checkout "${{ inputs.N64RECOMP_COMMIT }}" || echo "Commit not found, using HEAD"
-              git submodule update --init --recursive
-              cmake -S . -B build \
-                -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_MAKE_PROGRAM=ninja \
-                -G Ninja
-              cmake --build build --config Release --target N64RecompCLI RSPRecomp -j$(sysctl -n hw.ncpu)
-              cp build/N64RecompCLI ../N64Recomp
-              cp build/RSPRecomp ../RSPRecomp
-              cd ..
-      
-          - name: Run recompilers
-            run: |
-              chmod +x ./N64Recomp ./RSPRecomp
-              ./N64Recomp smashbrothers.us.toml
-              ./RSPRecomp n_aspMain.us.toml
-      
-          - name: Build Smash64Recompiled (universal binary)
-            run: |
-              export PATH="/usr/local/opt/ccache/libexec:$PATH"
-              LLVM_BIN="$(brew --prefix llvm)/bin"
-              RECOMP_CLANG="$PWD/n64recomp-clang-tools/clang"
-              RECOMP_LLD="$PWD/n64recomp-clang-tools/ld.lld"
-      
-              cmake -S . -B cmake-build \
-                -DCMAKE_BUILD_TYPE=${{ matrix.type }} \
-                -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-                -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-                -DCMAKE_C_COMPILER="${LLVM_BIN}/clang" \
-                -DCMAKE_CXX_COMPILER="${LLVM_BIN}/clang++" \
-                -DCMAKE_MAKE_PROGRAM=ninja \
-                -G Ninja \
-                -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-                -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
-                -DPATCHES_C_COMPILER="${RECOMP_CLANG}" \
-                -DPATCHES_LD="${RECOMP_LLD}"
-      
-              cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j$(sysctl -n hw.ncpu)
-      
-          - name: Prepare Archive
-            run: |
-              if [ -d "cmake-build/Smash64Recompiled.app" ]; then
+            
+  build-macos:
+          runs-on: macos-14
+          strategy:
+            matrix:
+              type: [ Debug, Release ]
+          name: macos (x64, arm64, ${{ matrix.type }})
+          steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                ref: ${{ github.event.pull_request.head.sha || github.ref }}
+                submodules: recursive
+            - name: ccache
+              uses: hendrikmuhs/ccache-action@v1.2
+              with:
+                key: ${{ runner.os }}-smash64re-ccache-${{ matrix.type }}
+            - name: Homebrew Setup
+              run: |
+                brew install ninja
+                brew uninstall --ignore-dependencies libpng freetype
+            - name: MacPorts Setup
+              uses: melusina-org/setup-macports@v1
+              id: 'macports'
+              with:
+                parameters: '.github/macos/macports.yaml'
+            - name: Get extra dependencies
+              uses: actions/checkout@v4
+              with:
+                repository: ${{ secrets.SMASH64_REPO_WITH_PAT }}
+                token: ${{ secrets.SMASH64_RECOMP }}
+                path: smash-secret
+            - name: Prepare Build
+              run: cp -r smash-secret/smashbrothers.us.z64 ./
+            - name: Build N64Recomp & RSPRecomp
+              run: |
+                git clone https://github.com/Mr-Wiseguy/N64Recomp.git --recurse-submodules N64RecompSource
+                cd N64RecompSource
+                git checkout ${{ inputs.N64RECOMP_COMMIT }}
+                git submodule update --init --recursive
+               
+                export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+               
+                cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build
+                cmake --build cmake-build --config Release --target N64Recomp -j $(sysctl -n hw.ncpu)
+                cmake --build cmake-build --config Release --target RSPRecomp -j $(sysctl -n hw.ncpu)
+               
+                cp cmake-build/N64Recomp ..
+                cp cmake-build/RSPRecomp ..
+            - name: Run N64Recomp & RSPRecomp
+              run: |
+                ./N64Recomp smashbrothers.us.toml
+                ./RSPRecomp n_aspMain.us.toml
+            - name: Build Smash64Recompiled
+              run: |-
+                export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+               
+                cmake -DCMAKE_BUILD_TYPE=${{ matrix.type }} -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build \
+                -DPATCHES_LD=/opt/local/bin/ld.lld-mp-18 -DCMAKE_AR=/opt/local/bin/llvm-ar-mp-18 -DPATCHES_C_COMPILER=/opt/local/bin/clang-mp-18 \
+                -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+                cmake --build cmake-build --config ${{ matrix.type }} --target Smash64Recompiled -j $(sysctl -n hw.ncpu)
+            - name: Prepare Archive
+              run: |
                 mv cmake-build/Smash64Recompiled.app Smash64Recompiled.app
-              else
-                echo "Warning: Smash64Recompiled.app not found — check CMake target name"
-                ls -la cmake-build/
-              fi
-      
-              # Clean up junk files if any
-              find Smash64Recompiled.app -name .DS_Store -delete
-      
-              zip -r -y Smash64Recompiled-${{ matrix.type }}-macOS-universal.zip Smash64Recompiled.app assets/ recompcontrollerdb.txt
-      
-          - name: Upload Artifact
-            uses: actions/upload-artifact@v4
-            with:
-              name: Smash64Recompiled-macos-universal-${{ matrix.type }}
-              path: Smash64Recompiled-${{ matrix.type }}-macOS-universal.zip
-              if-no-files-found: warn
+                zip -r -y Smash64Recompiled.zip Smash64Recompiled.app
+            - name: Archive Smash64Recompiled
+              uses: actions/upload-artifact@v4
+              with:
+                name: Smash64Recompiled-${{ runner.os }}-${{ matrix.type }}
+                path: Smash64Recompiled.zip
