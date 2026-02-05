@@ -206,7 +206,7 @@ elseif (APPLE)
     # to make our executable memory writable (required for mod function patching)
 target_link_options(Smash64Recompiled PRIVATE
     "-fuse-ld="
-    "${CMAKE_SOURCE_DIR}/.github/macos/ld64"
+    "-fuse-ld=${CMAKE_SOURCE_DIR}/.github/macos/ld64"
 )
 endif()
 
